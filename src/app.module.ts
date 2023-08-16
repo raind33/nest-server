@@ -5,6 +5,9 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { Permission } from './user/entities/permission.entity';
+import { AaaModule } from './aaa/aaa.module';
+import { BbbModule } from './bbb/bbb.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -16,7 +19,7 @@ import { JwtModule } from '@nestjs/jwt';
       database: 'login_test',
       synchronize: true,
       logging: true,
-      entities: [User],
+      entities: [User, Permission],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {
@@ -31,6 +34,8 @@ import { JwtModule } from '@nestjs/jwt';
       },
     }),
     UserModule,
+    AaaModule,
+    BbbModule,
   ],
   controllers: [AppController],
   providers: [AppService],

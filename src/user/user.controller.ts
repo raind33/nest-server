@@ -48,4 +48,8 @@ export class UserController {
   register(@Body(ValidationPipe) user: RegisterDto) {
     return this.userService.register(user);
   }
+  @Get('init')
+  init() {
+    return this.userService.initData();
+  }
 }
