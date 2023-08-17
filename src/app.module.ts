@@ -9,6 +9,10 @@ import { Permission } from './user/entities/permission.entity';
 import { AaaModule } from './aaa/aaa.module';
 import { BbbModule } from './bbb/bbb.module';
 import { RedisModule } from './redis/redis.module';
+import { Role } from './user/entities/role.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { PermissionGuard } from './user/permission.guard';
+import { LoginGuard } from './login.guard';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -20,7 +24,7 @@ import { RedisModule } from './redis/redis.module';
       database: 'login_test',
       synchronize: true,
       logging: true,
-      entities: [User, Permission],
+      entities: [User, Permission, Role],
       poolSize: 10,
       connectorPackage: 'mysql2',
       extra: {
@@ -40,6 +44,16 @@ import { RedisModule } from './redis/redis.module';
     RedisModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: LoginGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
+    },
+  ],
 })
 export class AppModule {}

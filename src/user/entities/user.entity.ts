@@ -7,7 +7,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Permission } from './permission.entity';
+import { Role } from './role.entity';
 
 @Entity()
 export class User {
@@ -35,9 +35,9 @@ export class User {
     comment: '更新时间',
   })
   updateTime: Date;
-  @ManyToMany(() => Permission)
+  @ManyToMany(() => Role)
   @JoinTable({
-    name: 'user_permission_relation',
+    name: 'user_role_relation',
   })
-  permissions: Permission[];
+  roles: Role[];
 }

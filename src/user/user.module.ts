@@ -8,7 +8,7 @@ import { PermissionGuard } from './permission.guard';
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
-  providers: [UserService, PermissionGuard],
-  exports: [UserService, PermissionGuard],
+  providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

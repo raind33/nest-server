@@ -8,7 +8,6 @@ import {
   Delete,
   Inject,
   Res,
-  ValidationPipe,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './user.service';
@@ -24,16 +23,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('login')
-  async login(
-    @Body(ValidationPipe) user: LoginDto,
-    @Res({ passthrough: true }) res: any,
-  ) {
+  async login(@Body() user: LoginDto, @Res({ passthrough: true }) res: any) {
     const foundUser = await this.userService.login(user);
-
+    console.log(foundUser);
     if (foundUser) {
       const token = await this.jwtService.signAsync({
         user: {
           id: foundUser.id,
+          roles: foundUser.roles,
           username: foundUser.username,
         },
       });
@@ -45,7 +42,7 @@ export class UserController {
   }
 
   @Post('register')
-  register(@Body(ValidationPipe) user: RegisterDto) {
+  register(@Body() user: RegisterDto) {
     return this.userService.register(user);
   }
   @Get('init')

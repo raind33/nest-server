@@ -4,6 +4,6 @@ import { BbbController } from './bbb.controller';
 
 @Module({
   controllers: [BbbController],
-  providers: [BbbService]
+  providers: [BbbService],
 })
 export class BbbModule {}
