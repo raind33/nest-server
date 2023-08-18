@@ -8,6 +8,8 @@ import {
   Delete,
   Inject,
   Res,
+  Query,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from './user.service';
@@ -27,15 +29,34 @@ export class UserController {
     const foundUser = await this.userService.login(user);
     console.log(foundUser);
     if (foundUser) {
-      const token = await this.jwtService.signAsync({
-        user: {
-          id: foundUser.id,
-          roles: foundUser.roles,
-          username: foundUser.username,
+      const access_token = this.jwtService.sign(
+        {
+          user: {
+            id: foundUser.id,
+            roles: foundUser.roles,
+            username: foundUser.username,
+          },
         },
-      });
-      res.setHeader('token', token);
-      return 'login success';
+        {
+          expiresIn: '30m',
+        },
+      );
+
+      const refresh_token = this.jwtService.sign(
+        {
+          user: {
+            id: foundUser.id,
+          },
+        },
+        {
+          expiresIn: '7d',
+        },
+      );
+
+      return {
+        access_token,
+        refresh_token,
+      };
     } else {
       return 'login fail';
     }
@@ -45,6 +66,41 @@ export class UserController {
   register(@Body() user: RegisterDto) {
     return this.userService.register(user);
   }
+  @Get('refresh')
+  async refresh(@Query('refresh_token') refreshToken: string) {
+    try {
+      const data = this.jwtService.verify(refreshToken);
+
+      const user = await this.userService.findUserById(data.user.id);
+
+      const access_token = this.jwtService.sign(
+        {
+          userId: user.id,
+          username: user.username,
+        },
+        {
+          expiresIn: '30m',
+        },
+      );
+
+      const refresh_token = this.jwtService.sign(
+        {
+          userId: user.id,
+        },
+        {
+          expiresIn: '7d',
+        },
+      );
+
+      return {
+        access_token,
+        refresh_token,
+      };
+    } catch (e) {
+      throw new UnauthorizedException('token 已失效，请重新登录');
+    }
+  }
+
   @Get('init')
   init() {
     return this.userService.initData();

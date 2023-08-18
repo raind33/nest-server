@@ -70,6 +70,13 @@ export class UserService {
       },
     });
   }
+  async findUserById(userId: number) {
+    return await this.entityManager.findOne(User, {
+      where: {
+        id: userId,
+      },
+    });
+  }
 
   async findByUsername(username: string) {
     const user = await this.entityManager.findOne(User, {
