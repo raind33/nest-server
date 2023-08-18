@@ -13,11 +13,13 @@ import { Role } from './user/entities/role.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { PermissionGuard } from './user/permission.guard';
 import { LoginGuard } from './login.guard';
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: 'mysql-container',
       port: 3306,
       username: 'root',
       password: '123456',
