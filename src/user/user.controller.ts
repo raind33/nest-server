@@ -27,7 +27,6 @@ export class UserController {
   @Post('login')
   async login(@Body() user: LoginDto, @Res({ passthrough: true }) res: any) {
     const foundUser = await this.userService.login(user);
-    console.log(foundUser);
     if (foundUser) {
       const access_token = this.jwtService.sign(
         {

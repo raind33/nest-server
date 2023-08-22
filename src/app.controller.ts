@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, UseGuards, Headers } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
 import { LoginGuard } from './login.guard';
@@ -9,13 +9,15 @@ export class AppController {
   @Inject(ConfigService)
   private configService: ConfigService;
   @Get()
-  getHello(): object {
-    return {
-      aaa: this.configService.get('aaa'),
-    };
+  getHello() {
+    return this.appService.getHello();
   }
   @Get('/api')
-  getHello1(): string {
+  getHello1(@Headers() headers): string {
     return '23233';
+  }
+  @Get('/hello')
+  getHello2(@Headers() headers): string {
+    return 'hello';
   }
 }

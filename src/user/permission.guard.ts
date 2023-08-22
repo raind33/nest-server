@@ -28,7 +28,6 @@ export class PermissionGuard implements CanActivate {
     if (!user) {
       return true;
     }
-    console.log(user);
     let permissions: any = await this.redisService.listGet(
       `user_${user.username}_permissions`,
     );
@@ -42,7 +41,6 @@ export class PermissionGuard implements CanActivate {
         total.push(...current.permissions.map((item) => item.name));
         return total;
       }, []);
-      console.log(permissions, '9999');
       this.redisService.listSet(
         `user_${user.username}_permissions`,
         permissions,
@@ -53,7 +51,6 @@ export class PermissionGuard implements CanActivate {
       'require-permission',
       [context.getClass(), context.getHandler()],
     );
-    console.log(requiredPermissions);
     if (permissions.some((item) => item === requiredPermissions[0])) {
       return true;
     } else {

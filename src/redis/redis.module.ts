@@ -11,7 +11,7 @@ import { RedisService } from './redis.service';
       async useFactory() {
         const client = createClient({
           socket: {
-            host: 'redis-container',
+            host: 'localhost',
             port: 6379,
           },
         });
